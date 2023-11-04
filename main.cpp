@@ -5,6 +5,5 @@ int main () {
     Point center;
     std::cin >> circle.center;
     std::cout << circle.center;
-
     return 0;
 }
