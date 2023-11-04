@@ -3,16 +3,35 @@
 #include <istream>
 #include <ostream>
 
-/*void Color::Print(std::ostream& out) const {
-    out << color;
-}*/
+void Circle::Print(std::ostream& out) const {
+    out << "\n<circle cx=\"";
+    get_center_x(out);
+    out << "\" cy=\"";
+    get_center_y(out);
+    out << "\" r=\"";
+    get_radius(out);
+    out << "\" fill=\"";
+    get_fillColor(out);
+    out << "\" stroke=\"";
+    get_strokeColor(out);
+    out << "\" stroke-width=\"";
+    get_strokeWidth(out);
+    out << "\" />";
+    out << "\n";
+}
 
-/*void Circle::Print() const override {
-    std::fin<<"<circle "<<"cx="<<center.X()<<" cy="<<center.Y()<<" r="<<radius<<
-    " fill="<<fillColor.Print()<<" stroke="<<strokeColor.Print()<<
-    " stroke-width="<<strokeWidth<<" />"<<std::endl; 
-  //  <circle cx="200" cy="200" r="30" fill="red" stroke="none" stroke-width="1" />
-}*/
+void Polyline::Print(std::ostream& out) const {
+    out << "\n<polyline points=\"";
+    get_points(out);
+    out << "\" fill=\"";
+    get_fillColor(out);
+    out << "\" stroke=\"";
+    get_strokeColor(out);
+    out << "\" stroke-width=\"";
+    get_strokeWidth(out);
+    out << "\" />";
+    out << "\n";
+}
 
 
 std::ostream &operator<<(std::ostream &os, const Point &point)
@@ -29,7 +48,7 @@ std::istream &operator>>(std::istream &in, Point &point)
 
 std::ostream &operator<<(std::ostream &os, const Color &color)
 {
-    return os << "color = (" << color.R() << "," << color.G() << "," << color.B()
+    return os << "(" << color.R() << "," << color.G() << "," << color.B()
               << ")";
 }
 
@@ -38,3 +57,4 @@ std::istream &operator>>(std::istream &in, Color &color)
     in >> color.R() >> color.G() >> color.B();
     return in;
 }
+
