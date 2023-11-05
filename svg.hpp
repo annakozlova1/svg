@@ -3,8 +3,9 @@
 #include <cmath>
 #include <istream>
 #include <ostream>
+#include <string>
 #include <iostream>
-
+#include <vector>
 struct Point {
     double x;
     double y;
@@ -101,32 +102,11 @@ Point center;
 double radius;
 /*проработать выброс исключений*/
 public:
-const double& get_center_x(std::ostream& out) const {
-        out << center.x;
-        return center.x;
-    }
-const double& get_center_y(std::ostream& out) const {
-        out << center.y;
-        return center.y;
-    }
-Point& give_center() {
-        std::cout << "введите центр";
-        std::cout << "\n";
-        std::cin >> center;
-        std::cout << "\n";
-        return center;
-    }
-const double& get_radius(std::ostream& out) const {
-        out << radius;
-        return radius;
-    }
-double& give_radius() {
-        std::cout << "введите радиус";
-        std::cout << "\n";
-        std::cin >> radius;
-        std::cout << "\n";
-        return radius;
-    }
+const double& get_center_x(std::ostream& out) const;
+const double& get_center_y(std::ostream& out) const;
+Point& give_center();
+const double& get_radius(std::ostream& out) const;
+double& give_radius();
 void Print(std::ostream& out) const override;
 };
 
@@ -143,35 +123,34 @@ Polyline(size_t size) {
 ~Polyline() {
     delete[] points;
 }
-
-const size_t& get_points(std::ostream& out) const {
-        for (int i=0; i<count; i++) {
-            out << points[i].X();
-            out << ",";
-            out << points[i].Y();
-            out << " ";
-        }
-        return count;
-    }
-
-size_t& give_points() {
-    std::cout << "введите точки ломаной:";
-        for (int i=0; i<count; i++) {
-            std::cin >> points[i].X();
-            std::cin.get();
-            std::cin >> points[i].Y();
-            std::cin.get();
-
-        }
-        return count;
-    }
-const size_t& get_count(std::ostream& out) const {
-        out << count;
-        return count;
-    }
+const size_t& get_points(std::ostream& out) const;
+size_t& give_points();
+const size_t& get_count(std::ostream& out) const;
 void Print(std::ostream& out) const override;
 };
 
+class Text : public Object {
+    private:
+    Point point;
+    Point offset;
+    unsigned fontSize;
+    std::string fontFamily;
+    std::string data;
+    public:
+    const double& get_point_x(std::ostream& out) const;
+    const double& get_point_y(std::ostream& out) const;
+    Point& give_point();
+    const double& get_offset_x(std::ostream& out) const;
+    const double& get_offset_y(std::ostream& out) const;
+    Point& give_offset();
+    const unsigned& get_fontSize(std::ostream& out) const;
+    unsigned& give_fontSize();
+    const std::string& get_fontFamily(std::ostream& out) const;
+    std::string& give_fontFamily();
+    const std::string& get_data(std::ostream& out) const;
+    std::string& give_data();
+    void Print(std::ostream& out) const override;
 
+};
 
 #endif
