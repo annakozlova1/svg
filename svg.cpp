@@ -48,6 +48,8 @@ void Circle::Print(std::ostream& out) const {
     out << "\n";
 }
 
+
+
 void Polyline::Print(std::ostream& out) const {
     out << "\n<polyline points=\"";
     get_points(out);
@@ -84,6 +86,50 @@ const size_t& Polyline::get_count(std::ostream& out) const {
         out << count;
         return count;
     }
+
+
+void Rectangle::Print(std::ostream& out) const {
+    out << "\n<polyline points=\"";
+    get_points(out);
+    out << "\" fill=\"";
+    get_fillColor(out);
+    out << "\" stroke=\"";
+    get_strokeColor(out);
+    out << "\" stroke-width=\"";
+    get_strokeWidth(out);
+    out << "\" />";
+    out << "\n";
+}
+const size_t& Rectangle::get_points(std::ostream& out) const {
+        for (int i=0; i<count; i++) {
+            out << points[i].X();
+            out << ",";
+            out << points[i].Y();
+            out << " ";
+        }
+        return count;
+    }
+size_t& Rectangle::give_points() {
+    std::cout << "\nвведите точки ломаной:";
+        for (int i=0; i<count-1; i++) {
+            std::cin >> points[i].X();
+            std::cin.get();
+            std::cin >> points[i].Y();
+            std::cin.get();
+        }
+        points[count-1].X()=points[0].X();
+        points[count-1].Y()=points[0].Y();
+        return count;
+    }
+const size_t& Rectangle::get_count(std::ostream& out) const {
+        out << count;
+        return count;
+    }
+
+
+
+
+
 
 const double& Text::get_point_x(std::ostream& out) const {
         out << point.x;
@@ -177,6 +223,10 @@ void Text::Print(std::ostream& out) const {
 
 
 
+
+
+
+
 std::ostream &operator<<(std::ostream &os, const Point &point)
 {
     return os << "point = (" << point.X() << "," << point.Y() << ")";
@@ -190,12 +240,26 @@ std::istream &operator>>(std::istream &in, Point &point)
 
 std::ostream &operator<<(std::ostream &os, const Color &color)
 {
-    return os << "(" << color.R() << "," << color.G() << "," << color.B()
+    if (color.C()=="") {
+        return os << "(" << color.R() << "," << color.G() << "," << color.B()
               << ")";
+    }
+    else {
+        return os << color.C();
+    }
 }
 std::istream &operator>>(std::istream &in, Color &color)
 {
-    in >> color.R() >> color.G() >> color.B();
-    return in;
+    int a;
+    if ((scanf ("%d", &a))==1) {
+        color.R()=a;
+        in >> color.G() >> color.B();
+        return in;
+    }
+    else {
+        in >> color.C();
+        return in;
+    }
+
 }
 
