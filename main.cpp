@@ -1,53 +1,59 @@
 #include <iostream>
 #include "svg.hpp"
+#include <fstream>
 
 
 int main () {
-    
-
-    Circle circle;
-    circle.give_circle();
-    circle.Print(std::cout); 
-    
-   /* size_t size=0;
-    std::cout << "введите количетсво точек" << std::endl;
-    std::cin >> size;
-    Polyline polyline(size);
-    polyline.give_poluline();
-    polyline.Print(std::cout);*/
-    
-    /*size_t size=0;
-    std::cout << "введите количетсво точек" << std::endl;
-    std::cin >> size;
-    Rectangle rectangle(size);
-    rectangle.give_rectangle();
-    rectangle.Print(std::cout);*/
-
- /*   Text text;
-    text.give_text();
-    text.Print(std::cout);  */
-  
-  /*  int tipe =0;
+    std::ofstream file;
+    file.open("file.svg");
+    int i=0;
     size_t size=0;
-    std::cout << "введите количетсво элементов" << std::endl;
-    std::cin >> size;
-    Document document(size);
-    Circle circle;
-   for (int i=0; i<size; i++) {
-        std::cout << "введите тип фигуры" << std::endl;
-     std::cin >> tipe;
-        if (tipe == 1) {
-            
-           // document.objects[i]->give_circle();
-            tipe=0;
+    Document document;
+    std::string tipe="";
+    while (1) {
+        tipe="";
+        std::cout <<"tipe figure: "<<std::endl;
+        std::cin >> tipe;
+        if (tipe=="circle") {
+            document.objects.push_back(new Circle ());
+            document.objects[i] -> Give();
+            i+=1;
             continue;
         }
-        else  {
-            return 1;
+        if (tipe=="polyline") {
+            std::cout << "введите количество точек" <<std::endl;
+            std::cin >> size;
+            document.objects.push_back(new Polyline(size));
+            document.objects[i] -> Give();
+            i+=1;
+            size=0;
+            continue;
+        }
+        if (tipe=="rectangle") {
+            std::cout << "введите количество точек" <<std::endl;
+            std::cin >> size;
+            document.objects.push_back(new Rectangle(size));
+            document.objects[i] -> Give();
+            i+=1;
+            size=0;
+            continue;
+        }
+        if (tipe=="text") {
+            document.objects.push_back(new Text());
+            document.objects[i] -> Give();
+            i+=1;
+            continue;
+        }
+        if (tipe=="no") {
+            break;
+        }
+        else {
+            std::cout << "error"<<std::endl;
+            continue;
         }
     }
-
-    document.Print(std::cout);*/
+    
+    document.Print(file);
 
     return 0;
 }

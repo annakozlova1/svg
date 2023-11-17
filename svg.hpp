@@ -15,6 +15,11 @@ struct Point {
     double &X() { return x; }
     double Y() const { return y; }
     double &Y() { return y; }
+    ~Point() {
+    x=0;
+    y=0;
+}
+    
 };
 
 std::ostream &operator<<(std::ostream &os, const Point &point);
@@ -38,11 +43,16 @@ struct Color {
     int &G() { return green; }
     int B() const { return blue; }
     int &B() { return blue; }
+    ~Color() {
+        red=0;
+        green=0;
+        blue=0;
+        color="";
+    }
 };
 
 std::ostream &operator<<(std::ostream &os, const Color &color);
 std::istream &operator>>(std::istream &in, Color &color);
-
 
 class Object {
 private:
@@ -86,62 +96,66 @@ double& give_strokeWidth() {
 //Реализовать методы, задающие указанные параметры.
 // Методы должны выбрасывать исключение в случае некорректных параметров.
 //Вывести объект в поток. 
-~Object() {
+virtual ~Object() {
     strokeWidth=0;
     fillColor={0,0,0};
     strokeColor={0,0,0};
 }
-
-
 virtual void Print(std::ostream& out) const = 0;
+virtual void Give()=0;
 };
 
 
 class Circle : public Object {
-private:
-Point center;
-double radius;
-/*проработать выброс исключений*/
-public:
-const double& get_center_x(std::ostream& out) const;
-const double& get_center_y(std::ostream& out) const;
-Point& give_center();
-const double& get_radius(std::ostream& out) const;
-double& give_radius();
-void give_circle() {
-    this -> give_center();
-    this -> give_radius();
-    this -> give_fillColor();
-    this -> give_strokeColor();
-    this -> give_strokeWidth();
-}
-void Print(std::ostream& out) const override;
-};
+    private:
+    Point center;
+    double radius;
+    /*проработать выброс исключений*/
+    public:
+        ~Circle() {
+        center={0,0};
+        radius=0;
+    }
+    const double& get_center_x(std::ostream& out) const;
+    const double& get_center_y(std::ostream& out) const;
+    Point& give_center();
+    const double& get_radius(std::ostream& out) const;
+    double& give_radius();
+    void Give() override {
+        this -> give_center();
+        this -> give_radius();
+        this -> give_fillColor();
+        this -> give_strokeColor();
+        this -> give_strokeWidth();
+    }
+    void Print(std::ostream& out) const override;
+    };
 
 
-class Polyline : public Object {
-private:
-Point* points;
-size_t count;
-/*проработать выброс исключений*/
-public:
-Polyline(size_t size) {
-    points = new Point[size];
-    count=size;
-}
-~Polyline() {
-    delete[] points;
-}
-const size_t& get_points(std::ostream& out) const;
-size_t& give_points();
-const size_t& get_count(std::ostream& out) const;
-void give_polyline() {
-    this -> give_points();
-    this -> give_fillColor();
-    this -> give_strokeColor();
-    this -> give_strokeWidth();
-}
-void Print(std::ostream& out) const override;
+    class Polyline : public Object {
+        private:
+        Point* points;
+        size_t count;
+        /*проработать выброс исключений*/
+        public:
+        Polyline(size_t size) {
+            points = new Point[size];
+            count=size;
+        }
+        ~Polyline() {
+            delete[] points;
+            count=0;
+        }
+        const size_t& get_points(std::ostream& out) const;
+        size_t& give_points();
+        const size_t& get_count(std::ostream& out) const;
+        void Give() override {
+            this -> give_points();
+            this -> give_fillColor();
+            this -> give_strokeColor();
+            this -> give_strokeWidth();
+        }
+        void Print(std::ostream& out) const override;
 };
 
 
@@ -157,11 +171,12 @@ Rectangle(size_t size) {
 }
 ~Rectangle() {
     delete[] points;
+    count=0;
 }
 const size_t& get_points(std::ostream& out) const;
 size_t& give_points();
 const size_t& get_count(std::ostream& out) const;
-void give_rectangle() {
+void Give() override {
     this -> give_points();
     this -> give_fillColor();
     this -> give_strokeColor();
@@ -191,7 +206,7 @@ class Text : public Object {
     std::string& give_fontFamily();
     const std::string& get_data(std::ostream& out) const;
     std::string& give_data();
-    void give_text() {
+    void Give() override {
         this -> give_point();
         this -> give_offset();
         this -> give_fontSize();
@@ -202,34 +217,35 @@ class Text : public Object {
         this -> give_strokeWidth();
     }
     void Print(std::ostream& out) const override;
-
+    ~Text() {
+        point={0,0};
+        offset={0,0};
+        fontSize=0;
+        fontFamily="";
+        data="";
+    }
 };
 
 
 class Document {
-    private:
-    Object** objects;
-    size_t count;
     public:
-    Document(size_t size) {
-    objects = new Object*[size];
-    count=size;
-}
-~Document() {
-    delete[] objects;
-}
+    std::vector <Object*> objects;
   /*  void AddObject(int ind, Object* obj) {
         objects[ind]=obj;
-    }*/  
+    } */
     void Print(std::ostream& out) const {
-        out << "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n";
         out << "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n";
-        for (int i=0; i<count; i++) {
+        for (int i=0; i<objects.size(); i++) {
             objects[i] -> Print(out);
         }
 
         out << "</svg>";
         out << "\n";
+    }
+    ~Document() {
+        for (int i=0; i<objects.size(); i++) {
+            delete objects[i];
+        }
     }
     };
 #endif
